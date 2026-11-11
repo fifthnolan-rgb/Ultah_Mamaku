@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Untuk Mama — Perjalanan Menembus Langit</title>
+<style>
+/* ===== DASAR ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);overflow-x:hidden;transition:color .8s;
+  --ink:#12305a;--card:rgba(255,255,255,.45);--edge:rgba(255,255,255,.65);
+}
+body.dusk{--ink:#f6f3ff;--card:rgba(18,20,58,.38);--edge:rgba(255,255,255,.18)}
+body.dusk h1,body.dusk h2,body.dusk p{text-shadow:0 1px 14px rgba(0,0,0,.4)}
+
+/* ===== LAPISAN LANGIT ===== */
+#sky{position:fixed;inset:0;z-index:0}
+#stars{position:fixed;inset:0;z-index:1;pointer-events:none}
+.orb{position:fixed;left:0;top:0;border-radius:50%;z-index:1;pointer-events:none;will-change:transform,opacity}
+#sunO{width:clamp(90px,16vw,160px);height:clamp(90px,16vw,160px);
+  background:radial-gradient(circle,#fff8d0 0,#ffd860 45%,#ffb347 72%);
+  box-shadow:0 0 60px 20px rgba(255,200,80,.7),0 0 160px 60px rgba(255,160,60,.35)}
+#moonO{width:clamp(70px,12vw,120px);height:clamp(70px,12vw,120px);opacity:0;
+  background:radial-gradient(circle at 35% 35%,#fff 0,#eef1ff 50%,#c9d0f0 100%);
+  box-shadow:0 0 50px 14px rgba(200,210,255,.55),0 0 140px 40px rgba(150,170,255,.25)}
+#clouds{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.cloud{position:absolute;left:0;top:0;width:200px;height:90px;will-change:transform;opacity:var(--cop,.9)}
+.cloud i{position:absolute;background:var(--cloud,#fff);border-radius:50%;filter:blur(2px)}
+
+/* ===== HUD ===== */
+.pill{position:fixed;z-index:6;padding:8px 16px;border-radius:999px;background:var(--card);
+  border:1px solid var(--edge);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  font:inherit;font-size:.8rem;color:var(--ink);transition:color .8s,background .8s}
+#clock{top:max(14px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);letter-spacing:.12em;white-space:nowrap}
+#auto{right:14px;bottom:max(14px,env(safe-area-inset-bottom));cursor:pointer}
+#auto.on{background:rgba(255,211,110,.7);color:#3a1d00}
+
+/* ===== KONTEN ===== */
+main{position:relative;z-index:3}
+section{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:13vh 22px;text-align:center;gap:22px}
+.card{max-width:560px;padding:30px 26px;border-radius:28px;background:var(--card);border:1px solid var(--edge);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.12);
+  transition:background .8s,border-color .8s}
+.kicker{letter-spacing:.28em;text-transform:uppercase;font-size:.7rem;opacity:.85;margin-bottom:12px}
+h1,h2{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:500;line-height:1.15}
+h1{font-size:clamp(2.4rem,10vw,4.8rem)}
+h2{font-size:clamp(1.8rem,6.5vw,2.9rem);margin-bottom:14px}
+p{font-size:clamp(1rem,3.7vw,1.2rem);line-height:1.75}
+.sig{margin-top:16px;font-style:italic;opacity:.85;font-size:.95rem}
+.btn{font:inherit;cursor:pointer;border:0;padding:15px 30px;border-radius:999px;font-weight:600;
+  background:linear-gradient(135deg,#ffd36e,#ff9e7a);color:#3a1d00;box-shadow:0 8px 30px rgba(255,160,90,.5);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.96)}
+.hint{font-size:.85rem;opacity:.8;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(8px)}}
+
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 1.2s ease,transform 1.2s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== BINGKAI FOTO (MATAHARI & BULAN) ===== */
+.frame{position:relative;width:min(74vw,330px);aspect-ratio:1;margin:18px auto}
+.photo{position:absolute;inset:0;border-radius:50%;z-index:2;background:#ffe9b8 center/cover no-repeat;
+  display:grid;place-items:center;text-align:center;color:#7a4a00;font-size:.95rem}
+.photo.empty::after{content:"📷\A Letakkan foto Mama\A di sini";white-space:pre;line-height:1.7}
+.sun .photo{border:7px solid #ffd45e;animation:pulse 4s ease-in-out infinite;
+  box-shadow:0 0 0 6px rgba(255,212,94,.35),0 0 60px 14px rgba(255,190,70,.75),0 0 140px 40px rgba(255,150,50,.35)}
+.sun .rays{position:absolute;inset:-24%;border-radius:50%;z-index:1;animation:spin 50s linear infinite;
+  background:repeating-conic-gradient(rgba(255,205,80,.95) 0 5deg,transparent 5deg 15deg);
+  -webkit-mask:radial-gradient(closest-side,transparent 64%,#000 68%,transparent 100%);
+          mask:radial-gradient(closest-side,transparent 64%,#000 68%,transparent 100%)}
+.moon .photo{background-color:#dfe5ff;color:#3b4270;border:6px solid #eef1ff;animation:pulse 5s ease-in-out infinite;
+  box-shadow:0 0 0 8px rgba(220,228,255,.22),0 0 60px 12px rgba(190,205,255,.65),0 0 150px 40px rgba(150,170,255,.3)}
+.moon .craters{position:absolute;inset:0;border-radius:50%;z-index:3;pointer-events:none;
+  background:
+   radial-gradient(circle at 12% 34%,rgba(120,130,180,.22) 0 6%,transparent 6.5%),
+   radial-gradient(circle at 88% 62%,rgba(120,130,180,.2) 0 8%,transparent 8.5%),
+   radial-gradient(circle at 56% 5%,rgba(120,130,180,.2) 0 5%,transparent 5.5%),
+   radial-gradient(circle at 28% 92%,rgba(120,130,180,.18) 0 6%,transparent 6.5%)}
+.moon::before{content:"";position:absolute;inset:-13%;border-radius:50%;border:1px dashed rgba(255,255,255,.45);animation:spin 70s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.025)}}
+
+/* ===== KONSTELASI PERMOHONAN ===== */
+.const{position:relative;width:min(92vw,520px);aspect-ratio:300/170;margin:6px auto}
+.const svg{position:absolute;inset:0;width:100%;height:100%}
+.wish{position:absolute;width:48px;height:48px;margin:-24px 0 0 -24px;border:0;background:none;cursor:pointer}
+.wish::before{content:"";position:absolute;inset:16px;border-radius:50%;background:rgba(255,255,255,.7);
+  box-shadow:0 0 10px 3px rgba(255,255,255,.6);transition:all .6s;animation:tw 2.4s ease-in-out infinite}
+.wish.lit::before{inset:8px;background:#ffe7a0;box-shadow:0 0 24px 9px rgba(255,214,110,.9);animation:none}
+@keyframes tw{50%{opacity:.45;transform:scale(.8)}}
+#wishText{min-height:3.4em;font-family:Georgia,serif;font-style:italic;font-size:clamp(1.15rem,4.4vw,1.5rem)}
+#wishText.pop{animation:pop .8s ease}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}}
+.final{opacity:0;transform:translateY(24px);max-height:0;overflow:hidden;padding-top:0;padding-bottom:0;
+  transition:opacity 1.4s,transform 1.4s,max-height 1.4s,padding 1.4s}
+.final.show{opacity:1;transform:none;max-height:900px;padding:30px 26px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+<canvas id="stars"></canvas>
+<div class="orb" id="sunO"></div>
+<div class="orb" id="moonO"></div>
+<div id="clouds"></div>
+<div class="pill" id="clock">06.00 · Pagi</div>
+<button class="pill" id="auto">✦ Terbang otomatis</button>
+
+<main>
+  <!-- 1. PEMBUKA -->
+  <section id="s-hero">
+    <div class="reveal in">
+      <p class="kicker">Perjalanan menembus langit</p>
+      <h1>Selamat Ulang Tahun,<br><span class="nm">Mama</span></h1>
+    </div>
+    <p class="reveal in card" style="transition-delay:.3s">Ada langit kecil yang kusiapkan untukmu. Gulir pelan-pelan, atau ketuk langitnya, dan ikut terbang bersamaku.</p>
+    <button class="btn reveal in" id="go" style="transition-delay:.6s">Mulai terbang ✦</button>
+    <div class="hint">gulir ke bawah ↓</div>
+  </section>
+
+  <!-- 2. PAGI -->
+  <section id="s-pagi">
+    <div class="card reveal">
+      <p class="kicker">06.00 · Pagi</p>
+      <h2>Kamu adalah pagi pertamaku</h2>
+      <p>Sebelum aku mengenal kata, aku sudah mengenal suaramu. Sejak itu, setiap terang yang kutemui terasa seperti kamu.</p>
+    </div>
+  </section>
+
+  <!-- 3. SIANG · FOTO DALAM BINGKAI MATAHARI -->
+  <section id="s-sun">
+    <!-- Foto Mama otomatis terpasang dari CONFIG.photo di bagian <script> -->
+    <div class="frame sun reveal"><div class="rays"></div><div class="photo"></div></div>
+    <div class="card reveal">
+      <p class="kicker">Siang · Matahari</p>
+      <h2>Matahariku</h2>
+      <p>Hangat tanpa pernah meminta untuk dilihat. Kamu menyinari semua orang di sekitarmu, bahkan di hari ketika kamu sendiri sedang lelah.</p>
+    </div>
+  </section>
+
+  <!-- 4. SENJA -->
+  <section id="s-senja">
+    <div class="card reveal">
+      <p class="kicker">Senja · Terima kasih</p>
+      <h2>Untuk semua yang tak pernah kau ceritakan</h2>
+      <p>Untuk lelah yang kau simpan sendiri, doa yang kau bisikkan diam-diam, dan semua yang kau kurangi dari dirimu agar kami merasa cukup. Terima kasih, Ma.</p>
+    </div>
+  </section>
+
+  <!-- 5. MALAM · FOTO DALAM BINGKAI BULAN -->
+  <section id="s-moon">
+    <div class="frame moon reveal"><div class="photo"></div><div class="craters"></div></div>
+    <div class="card reveal">
+      <p class="kicker">Malam · Bulan</p>
+      <h2>Bulanku</h2>
+      <p>Di malam tergelap sekalipun, kamu tetap cahaya yang kutuju untuk pulang. Dan sejauh apa pun aku, kita selalu menatap langit yang sama.</p>
+    </div>
+  </section>
+
+  <!-- 6. PERMOHONAN -->
+  <section id="s-wish">
+    <div class="reveal">
+      <p class="kicker">Larut malam · Satu permohonan</p>
+      <h2>Sentuh bintang-bintangnya</h2>
+      <p>Ada 7 bintang. Tiap bintang menyimpan satu doa untukmu.</p>
+    </div>
+    <div class="const reveal" id="const">
+      <svg viewBox="0 0 300 170" preserveAspectRatio="none"><polyline id="line" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1" stroke-dasharray="3 4"/></svg>
+    </div>
+    <p id="wishText">…</p>
+    <p class="hint" id="count" style="animation:none;opacity:.7">0 / 7 bintang menyala</p>
+    <div class="card final" id="final">
+      <h2><span class="nm">Mama</span>, selamat ulang tahun 🤍</h2>
+      <p>Semoga langit selalu berbaik hati padamu: sehat, tenang, dan dicintai sebanyak kamu mencintai kami.</p>
+      <p class="sig" id="sig"></p>
+    </div>
+  </section>
+</main>
+
+<script>
+(()=>{
+/* ================================================================
+   ✏️  PENGATURAN — EDIT BAGIAN INI SAJA
+   ----------------------------------------------------------------
+   FOTO MAMA:
+   1) Simpan foto di folder yang sama dengan file ini (mis. mama.jpg)
+      lalu isi:  photo: "mama.jpg"
+   2) ATAU pakai link gambar:  photo: "https://situs.com/foto-mama.jpg"
+   Foto persegi / wajah di tengah paling cocok (otomatis dipotong bulat).
+   Foto dipakai di bingkai Matahari DAN bingkai Bulan.
+   ================================================================ */
+const CONFIG={
+  name:"Mama",                                   // panggilan: Mama / Ibu / Bunda
+  from:"— dari anakmu, yang belajar bersinar darimu", // tanda tangan di akhir
+  photo:"https://cdn.phototourl.com/member/2026-11-11-c742f05a-6b2c-461a-847f-4967a079dcec.png"                                       // ← ISI URL / NAMA FILE FOTO DI SINI
+};
+
+/* ===== UTIL ===== */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const hex=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+const rgb=a=>`rgb(${a})`;
+const pad=n=>String(n).padStart(2,"0");
+
+$$(".nm").forEach(e=>e.textContent=CONFIG.name);
+$("#sig").textContent=CONFIG.from;
+$$(".photo").forEach(el=>CONFIG.photo?el.style.backgroundImage=`url("${CONFIG.photo}")`:el.classList.add("empty"));
+
+/* ===== WARNA LANGIT: pagi → siang → senja → malam ===== */
+const STOPS=[
+ {p:0,  t:"#8fd0ff",b:"#ffe7c7",c:"#ffffff",o:.95},
+ {p:.25,t:"#3f9cf0",b:"#b9e4ff",c:"#ffffff",o:.95},
+ {p:.5, t:"#6a4fa3",b:"#ff9066",c:"#ffd9c2",o:.8},
+ {p:.72,t:"#232658",b:"#7b4a95",c:"#6a5a9c",o:.4},
+ {p:1,  t:"#04061a",b:"#141a4a",c:"#2a2f66",o:.15}
+].map(s=>({p:s.p,t:hex(s.t),b:hex(s.b),c:hex(s.c),o:s.o}));
+function skyAt(p){
+  let i=0;while(i<STOPS.length-2&&p>STOPS[i+1].p)i++;
+  const a=STOPS[i],b=STOPS[i+1],t=clamp((p-a.p)/(b.p-a.p));
+  return{t:mix(a.t,b.t,t),b:mix(a.b,b.b,t),c:mix(a.c,b.c,t),o:a.o+(b.o-a.o)*t};
+}
+const TK=[[0,6],[.25,12],[.5,17.5],[.72,19.5],[1,24]];
+function hourAt(p){let i=0;while(i<TK.length-2&&p>TK[i+1][0])i++;const[a,b]=[TK[i],TK[i+1]];return a[1]+(b[1]-a[1])*clamp((p-a[0])/(b[0]-a[0]));}
+
+/* ===== AWAN (parallax) ===== */
+const cloudsEl=$("#clouds");
+const CL=[{y:.10,s:1.2,d:.9,v:.9,x:.1},{y:.22,s:.8,d:.5,v:.5,x:.55},{y:.34,s:1.6,d:1.2,v:1.1,x:.8},{y:.52,s:1,d:.7,v:.7,x:.3},
+          {y:.64,s:1.4,d:1.1,v:1,x:.65},{y:.78,s:.9,d:.6,v:.6,x:.05},{y:.16,s:.6,d:.3,v:.35,x:.9},{y:.46,s:.7,d:.4,v:.45,x:.45}];
+CL.forEach(c=>{
+  const e=document.createElement("div");e.className="cloud";
+  e.innerHTML='<i style="left:0;top:34px;width:200px;height:56px;border-radius:40px"></i><i style="left:28px;top:6px;width:80px;height:80px"></i><i style="left:88px;top:-8px;width:100px;height:100px"></i>';
+  cloudsEl.appendChild(e);c.el=e;
+});
+
+/* ===== BINTANG, BINTANG JATUH, KILAU KLIK ===== */
+const cv=$("#stars"),ctx=cv.getContext("2d");
+let W=0,H=0,stars=[],parts=[],shoots=[];
+function resize(){
+  const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
+  stars=Array.from({length:Math.floor(W*H/6500)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,
+    ph:Math.random()*6.28,sp:Math.random()*.003+.001,z:Math.random()}));
+}
+addEventListener("resize",resize);resize();
+
+function burst(x,y,n=16){
+  const hues=[45,50,340,200,280];
+  for(let i=0;i<n;i++){const a=Math.random()*6.283,s=1+Math.random()*3.5;
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,l:1,r:2+Math.random()*3,h:hues[i%5]});}
+}
+function star4(x,y,r){
+  ctx.beginPath();
+  for(let i=0;i<8;i++){const a=i*Math.PI/4,k=i%2?r*.35:r;ctx.lineTo(x+Math.cos(a)*k,y+Math.sin(a)*k);}
+  ctx.closePath();ctx.fill();
+}
+addEventListener("pointerdown",e=>burst(e.clientX,e.clientY,14));
+
+/* ===== INTERAKSI: mouse parallax & scroll ===== */
+let mx=0,my=0,tmx=0,tmy=0,P=0,target=0;
+addEventListener("pointermove",e=>{tmx=e.clientX/innerWidth*2-1;tmy=e.clientY/innerHeight*2-1;},{passive:true});
+const maxScroll=()=>Math.max(1,document.documentElement.scrollHeight-innerHeight);
+const prog=()=>clamp(scrollY/maxScroll());
+addEventListener("scroll",()=>target=prog(),{passive:true});
+
+/* Terbang otomatis */
+let auto=false,ay=0;const autoBtn=$("#auto");
+function setAuto(v){auto=v;ay=scrollY;autoBtn.classList.toggle("on",v);autoBtn.textContent=v?"⏸ Berhenti":"✦ Terbang otomatis";}
+autoBtn.onclick=()=>setAuto(!auto);
+["wheel","touchstart","keydown"].forEach(ev=>addEventListener(ev,()=>auto&&setAuto(false),{passive:true}));
+$("#go").onclick=()=>$("#s-pagi").scrollIntoView({behavior:"smooth"});
+
+/* Muncul halus saat di-scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.25});
+$$(".reveal").forEach(el=>io.observe(el));
+
+/* ===== LOOP UTAMA ===== */
+const skyEl=$("#sky"),sunO=$("#sunO"),moonO=$("#moonO"),clock=$("#clock");
+let lastClock="";
+function frame(t){
+  if(auto){ay+=1.3;scrollTo(0,ay);target=prog();if(ay>=maxScroll())setAuto(false);}
+  P+=(target-P)*.07;mx+=(tmx-mx)*.06;my+=(tmy-my)*.06;
+
+  const k=skyAt(P);
+  skyEl.style.background=`linear-gradient(180deg,${rgb(k.t)},${rgb(k.b)})`;
+  cloudsEl.style.setProperty("--cloud",rgb(k.c));cloudsEl.style.setProperty("--cop",k.o);
+  document.body.classList.toggle("dusk",P>.38);
+
+  // matahari terbenam → bulan terbit
+  const q=clamp(P/.55);
+  sunO.style.opacity=1-clamp((P-.45)/.15);
+  sunO.style.transform=`translate3d(${W*(.78-.35*q)+mx*-14}px,${H*(.1+.8*q)}px,0) translate(-50%,-50%)`;
+  const m=clamp((P-.5)/.5);
+  moonO.style.opacity=clamp((P-.5)/.15);
+  moonO.style.transform=`translate3d(${W*(.2+.45*m)+mx*-14}px,${H*(.95-.8*m)}px,0) translate(-50%,-50%)`;
+
+  // awan
+  const span=W+500;
+  CL.forEach(c=>{
+    const x=((c.x*span+t*c.v*.025+mx*c.d*30)%span+span)%span-300;
+    const y=c.y*H-P*c.d*H*.3;
+    c.el.style.transform=`translate3d(${x}px,${y}px,0) scale(${c.s})`;
+  });
+
+  // jam langit
+  const hr=hourAt(P),hh=Math.floor(hr)%24,mm=Math.floor((hr%1)*60);
+  const ph=hr<10?"Pagi":hr<15?"Siang":hr<18.5?"Senja":hr<22?"Malam":"Larut malam";
+  const txt=`${pad(hh)}.${pad(mm)} · ${ph}`;
+  if(txt!==lastClock){clock.textContent=txt;lastClock=txt;}
+
+  // kanvas bintang
+  ctx.clearRect(0,0,W,H);
+  const vis=clamp((P-.5)/.35);
+  if(vis>0){
+    for(const s of stars){
+      const a=vis*(.3+.7*(.5+.5*Math.sin(t*s.sp*6+s.ph)));
+      ctx.fillStyle=`rgba(255,252,235,${a})`;
+      const x=s.x+mx*s.z*-22,y=s.y+my*s.z*-12;
+      if(s.r>1.2){star4(x,y,s.r*2.4);}else{ctx.beginPath();ctx.arc(x,y,s.r,0,6.283);ctx.fill();}
+    }
+    if(vis>.5&&shoots.length<2&&Math.random()<.006)
+      shoots.push({x:W*.1+Math.random()*W*.9,y:Math.random()*H*.35,vx:-(7+Math.random()*5),vy:3+Math.random()*3,l:1});
+    for(let i=shoots.length-1;i>=0;i--){
+      const s=shoots[i];s.x+=s.vx;s.y+=s.vy;s.l-=.012;
+      if(s.l<=0){shoots.splice(i,1);continue;}
+      const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*9,s.y-s.vy*9);
+      g.addColorStop(0,`rgba(255,255,255,${s.l})`);g.addColorStop(1,"rgba(255,255,255,0)");
+      ctx.strokeStyle=g;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*9,s.y-s.vy*9);ctx.stroke();
+    }
+  }
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.vx*=.985;p.l-=.014;
+    if(p.l<=0){parts.splice(i,1);continue;}
+    ctx.fillStyle=`hsla(${p.h},100%,70%,${p.l})`;star4(p.x,p.y,p.r*p.l+1);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ===== KONSTELASI PERMOHONAN ===== */
+// ✏️ Edit doa di sini
+const WISHES=["Semoga Mama selalu sehat","Semoga tawa Mama makin sering","Semoga tidur Mama selalu nyenyak",
+  "Semoga rezeki Mama selalu lapang","Semoga Mama dipeluk kami lebih sering","Semoga impian kecil Mama terwujud","Semoga Mama bahagia, apa adanya"];
+const PTS=[[10,115],[55,62],[105,98],[150,32],[200,88],[246,46],[290,104]]; // posisi bintang (viewBox 300x170)
+const box=$("#const");let lit=0;
+$("#line").setAttribute("points",PTS.map(p=>p.join(",")).join(" "));
+PTS.forEach((p,i)=>{
+  const b=document.createElement("button");b.className="wish";b.setAttribute("aria-label","Bintang doa "+(i+1));
+  b.style.left=p[0]/3+"%";b.style.top=p[1]/1.7+"%";
+  b.onclick=e=>{
+    e.stopPropagation();if(b.classList.contains("lit"))return;
+    b.classList.add("lit");lit++;
+    const w=$("#wishText");w.textContent=WISHES[i];w.classList.remove("pop");void w.offsetWidth;w.classList.add("pop");
+    $("#count").textContent=lit+" / "+PTS.length+" bintang menyala";
+    const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,26);
+    if(lit===PTS.length)finale();
+  };
+  box.appendChild(b);
+});
+function finale(){
+  $("#final").classList.add("show");
+  [0,350,700,1100,1500,1900].forEach(d=>setTimeout(()=>burst(Math.random()*W,Math.random()*H*.6,40),d));
+  setTimeout(()=>$("#final").scrollIntoView({behavior:"smooth",block:"center"}),700);
+}
+
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
